@@ -9,7 +9,7 @@ class GazeDetection:
     config = {}
 
     def __init__(self):
-        with open('cam_config', 'w') as outfile:
+        with open('cam_config.json', 'w') as outfile:
             json.dump(self.config, outfile)
 
     def main_method(self, body):
