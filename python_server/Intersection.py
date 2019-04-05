@@ -41,7 +41,7 @@ class Intersection(object):
         # plane (P, N), or +inf if there is no intersection.
         # O and P are 3D points, D and N (normal) are normalized vectors.
         denom = np.dot(D, N)
-        if np.abs(denom) < 1e-6:
+        if np.abs(denom).any() < 1e-6:
             return np.inf
         d = np.dot(P - O, N) / denom
         if d < 0:

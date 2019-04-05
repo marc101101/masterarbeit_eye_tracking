@@ -1,6 +1,6 @@
 import math
-import Intersection
-import AOI
+from Intersection import Intersection
+from AOI import AOI
 import json
 import datetime
 import time
@@ -21,6 +21,8 @@ class GazeDetection:
     config = {}
     config_file_name = 'config/cam_config.json'
     session_data = []
+    TRANSFORMED_COORDS_GAZE = 0.0
+    TRANSFORMED_GAZES = 0.0
 
     def __init__(self):
         self.read_cam_config()
@@ -31,9 +33,31 @@ class GazeDetection:
             self.save_to_raw_log_file(body)
             transformed_data = self.transform_data(body)
             self.session_data.append(transformed_data)
+            self.prep_aoi()
             return "200"
         else:
             return "500"
+
+    def prep_aoi(self):
+        aois = self.get_aois()
+
+        # Intersektion Ojekte erstellen
+        intersections = self.get_all_aois_intersection(self.TRANSFORMED_COORDS_GAZE, self.TRANSFORMED_GAZES, aois)
+
+        # Kürzeste Entfernung für jeden Punkt
+        distances = np.array(
+            [self.set_closest_intersection_and_get_distance(intersections[i]) for i in range(len(intersections))])
+
+        # Start- und Endpunkte der Blicke (Start = Ende, wenn kein Schnittpunkt => Entfernung INF)
+        coords, gaze_end = self.get_gaze_pairs(self.TRANSFORMED_COORDS_GAZE, self.TRANSFORMED_GAZES, distances)
+
+        # coords = np.swapaxes(coords, 0, 1)
+        # gaze_end = np.swapaxes(gaze_end, 0, 1)
+
+        #drawClass.plot_vectors_with_image_and_aois(coords, gaze_end, aois, 'Test')
+
+        #for aoi in aois:
+            #drawClass.plot_heatmap(aoi, aoi.title)
 
 # FILE OPERATION METHODS ---------------------------------------------------------
 
@@ -52,9 +76,9 @@ class GazeDetection:
             file_writer.writerow(row)
 
     def save_to_raw_log_file(self, data):
-        # insert system timestamp
-        data.insert(1, time.time())
-        self.write_to_csv(data)
+        row = list(data.values())
+        row.insert(1, time.time())
+        self.write_to_csv(row)
 
     def get_cam_config(self, client_id):
         try:
@@ -65,8 +89,8 @@ class GazeDetection:
 # TRANSFORM COORDINATES METHODS ---------------------------------------------------------
 
     def transform_data(self, body):
-        COORDS_GAZE = np.array([body[20], body[21], body[22]])
-        GAZES = np.array([body[8], body[9], body[10]])
+        COORDS_GAZE = np.array([body['eye_lmk_X_0'], body['eye_lmk_Y_0'], body['eye_lmk_Z_0']])
+        GAZES = np.array([body['gaze_0_x'], body['gaze_0_y'], body['gaze_0_y']])
 
         coords = COORDS_GAZE
         directions = GAZES
@@ -77,14 +101,14 @@ class GazeDetection:
         gaze_ends = coords + directions
 
         # transformieren
-        TRANSFORMED_COORDS_GAZE = self.apply_transformation(client_id, COORDS_GAZE, swap=False)
+        self.TRANSFORMED_COORDS_GAZE = self.apply_transformation(client_id, COORDS_GAZE, swap=False)
         gaze_ends = self.apply_transformation(client_id, gaze_ends, swap=False)
 
         # Blickrichtung zurückrechnen und normalisieren
-        directions = gaze_ends - TRANSFORMED_COORDS_GAZE
-        TRANSFORMED_GAZES = np.array([self.normalize(directions[i]) for i in range(len(directions))])
+        directions = gaze_ends - self.TRANSFORMED_COORDS_GAZE
+        self.TRANSFORMED_GAZES = np.array([self.normalize(directions[i]) for i in range(len(directions))])
 
-        return TRANSFORMED_GAZES
+        return self.TRANSFORMED_GAZES
 
     def get_transformation_matrix(self, client_id):
         rot_x = self.rotate_x(math.radians(self.config[client_id]['rot_x']))
@@ -231,8 +255,9 @@ class GazeDetection:
         return np.array([Intersection(start, direction, aoi) for aoi in aois])
 
     def get_all_aois_intersection(self, start_points, directions, aois):
-        return np.array(
-            [self.get_single_aois_intersection(start_points[i], directions[i], aois) for i in range(len(start_points))])
+        #return np.array(
+            #[self.get_single_aois_intersection(start_points[i], directions[i], aois) for i in range(len(start_points))])
+        return np.array([Intersection(start_points, directions, aoi) for aoi in aois])
 
     def set_closest_intersection_and_get_distance(self, intersections):
         closest = min(intersections, key=lambda x: x.distance)
