@@ -1,2 +1,8 @@
 
 \.idea/
+
+\.DS_Store
+
+python_server/data/
+
+python_server/__pycache__/

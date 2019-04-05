@@ -1,4 +1,3 @@
-import numpy as np
 import math
 import Intersection
 import AOI
@@ -6,22 +5,22 @@ import json
 import datetime
 import time
 import csv
-
-import matplotlib.pyplot as plt
 import numpy as np
 
-from DrawCurrentData import DrawCurrentData
+#from DrawCurrentData import DrawCurrentData
 
-drawClass = DrawCurrentData()
+#drawClass = DrawCurrentData()
 
 
 class GazeDetection:
     file_name_raw = ''
-    header_file_row = ['client_id', 'system_timestamp', 'frame', 'face_id', 'timestamp', 'confidence', 'success', 'gaze_0_x',
-                       'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x', 'gaze_angle_y',
-                       'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz']
+    header_file_row = ['client_id', 'system_timestamp', 'frame', 'face_id', 'timestamp', 'confidence', 'success',
+                       'gaze_0_x', 'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x',
+                       'gaze_angle_y', 'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz', 'eye_lmk_X_0',
+                       'eye_lmk_Y_0', 'eye_lmk_Z_0']
     config = {}
     config_file_name = 'config/cam_config.json'
+    session_data = []
 
     def __init__(self):
         self.read_cam_config()
@@ -30,9 +29,13 @@ class GazeDetection:
     def main_method(self, body):
         if self.valid_body(body):
             self.save_to_raw_log_file(body)
-            self.transform_data(body)
+            transformed_data = self.transform_data(body)
+            self.session_data.append(transformed_data)
+            return "200"
         else:
             return "500"
+
+# FILE OPERATION METHODS ---------------------------------------------------------
 
     def read_cam_config(self):
         with open(self.config_file_name, 'r') as f:
@@ -44,12 +47,13 @@ class GazeDetection:
         self.write_to_csv(self.header_file_row)
 
     def write_to_csv(self, row):
-        with open('data/' + self.file_name_raw, 'w') as csvFile:
+        with open('data/' + self.file_name_raw, 'a') as csvFile:
             file_writer = csv.writer(csvFile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             file_writer.writerow(row)
 
     def save_to_raw_log_file(self, data):
-        data.insert(0, time.time())
+        # insert system timestamp
+        data.insert(1, time.time())
         self.write_to_csv(data)
 
     def get_cam_config(self, client_id):
@@ -58,65 +62,78 @@ class GazeDetection:
         except Exception as e:
             return json.dumps([])
 
+# TRANSFORM COORDINATES METHODS ---------------------------------------------------------
+
     def transform_data(self, body):
-        coords = []
-        directions = []
+        COORDS_GAZE = np.array([body[20], body[21], body[22]])
+        GAZES = np.array([body[8], body[9], body[10]])
+
+        coords = COORDS_GAZE
+        directions = GAZES
+        client_id = body[0]
+
         # normierte Blickrichtung auf Startkoordinaten addieren
-        gaze_ends = np.swapaxes(np.swapaxes(coords, 0, 1) + np.swapaxes(directions, 0, 1), 0, 1)
+        #gaze_ends = np.swapaxes(np.swapaxes(coords, 0, 1) + np.swapaxes(directions, 0, 1), 0, 1)
+        gaze_ends = coords + directions
+
         # transformieren
-        TRANSFORMED_COORDS_GAZE = self.apply_transfromation(body, swap=False)
-        gaze_ends = self.apply_transfromation(gaze_ends, swap=False)
+        TRANSFORMED_COORDS_GAZE = self.apply_transformation(client_id, COORDS_GAZE, swap=False)
+        gaze_ends = self.apply_transformation(client_id, gaze_ends, swap=False)
+
         # Blickrichtung zurückrechnen und normalisieren
         directions = gaze_ends - TRANSFORMED_COORDS_GAZE
         TRANSFORMED_GAZES = np.array([self.normalize(directions[i]) for i in range(len(directions))])
 
-    def valid_body(self, body):
-        if len(body) >= 18:
-            return True
-        else:
-            return False
+        return TRANSFORMED_GAZES
 
-    def get_transformation_matrix(self):
-        rot_x = self.rotate_x(math.radians(-8))
-        rot_y = self.rotate_y(math.radians(21))
-        rot_z = self.rotate_z(math.radians(11))
+    def get_transformation_matrix(self, client_id):
+        rot_x = self.rotate_x(math.radians(self.config[client_id]['rot_x']))
+        rot_y = self.rotate_y(math.radians(self.config[client_id]['rot_y']))
+        rot_z = self.rotate_z(math.radians(self.config[client_id]['rot_z']))
 
-        s_x = self.scale_x(0.4)
-        s_y = self.scale_y(0.4)
-        s_z = self.scale_z(0.4)
+        s_x = self.scale_x(self.config[client_id]['s_x'])
+        s_y = self.scale_y(self.config[client_id]['s_y'])
+        s_z = self.scale_z(self.config[client_id]['s_z'])
 
-        d = self.translate(200, 400, 25)
+        d = self.translate(self.config[client_id]['t_x'],
+                           self.config[client_id]['t_y'],
+                           self.config[client_id]['t_z'])
 
         rot_ax = self.rotate_y(math.radians(-90))
         swap_ax = self.scale_x(-1)
 
         return swap_ax @ rot_ax @ d @ s_z @ s_y @ s_x @ rot_z @ rot_x @ rot_y
 
-    def get_aois(self):
-        schrank_oben = AOI([0, 330, 75], [800, 330, 75], [0, 496, 75], 'orange', 'Schrank oben')
-        wand = AOI([0, 330, 1], [0, 200, 1], [800, 330, 1], 'blue', 'Wand zwischen Schränken')
-        schrank_unten = AOI([0, 200, 156], [800, 200, 156], [0, 0, 156], 'white', 'Schrank unten')
-        af = AOI([0, 200, 0], [800, 200, 0], [0, 200, 156], 'green', 'Arbeitsfläche')
-        ks = AOI([800, 0, 156], [935, 0, 156], [800, 496, 156], 'cyan', 'Kühlschrank')
+    def apply_transformation(self, client_id, x, swap=True):
+        tr = self.get_transformation_matrix(client_id)
 
-        return [schrank_oben, wand, schrank_unten, ks, af]
+        #x = np.swapaxes(x, 0, 1)
 
-    def normalize(self, x):
-        return x / np.linalg.norm(x)
-
-    def apply_transformation(self, x, swap=True):
-        tr = self.get_transformation_matrix()
-
-        x = np.swapaxes(x, 0, 1)
-
-        x = np.insert(x, 3, 1, axis=1)
+        x = np.insert(x, 3, 1, axis=0)
+        # Transponieren weil matrix vorne stehen muss
         x = x @ tr.T
 
-        x = np.delete(x, 3, axis=1)
+        x = np.delete(x, 3, axis=0)
         if swap:
-            return np.swapaxes(x, 0, 1)
+            #return np.swapaxes(x, 0, 1)
+            return x
         else:
             return x
+
+# HELPER METHODS ----------------------------------------------------------------
+
+    def valid_body(self, body):
+        if len(body) >= 23:
+            return True
+        else:
+            return False
+
+    def normalize(self, x):
+        retVal = x / np.linalg.norm(x)
+        if math.isnan(retVal):
+            return 0
+        else:
+            return retVal
 
     def translate(self, x, y, z):
         return np.array([
@@ -173,6 +190,17 @@ class GazeDetection:
             [0, 0, factor, 0],
             [0, 0, 0, 1]
         ])
+
+# AOI METHODS -------------------------------------------------------------------
+
+    def get_aois(self):
+        schrank_oben = AOI([0, 330, 75], [800, 330, 75], [0, 496, 75], 'orange', 'Schrank oben')
+        wand = AOI([0, 330, 1], [0, 200, 1], [800, 330, 1], 'blue', 'Wand zwischen Schränken')
+        schrank_unten = AOI([0, 200, 156], [800, 200, 156], [0, 0, 156], 'white', 'Schrank unten')
+        af = AOI([0, 200, 0], [800, 200, 0], [0, 200, 156], 'green', 'Arbeitsfläche')
+        ks = AOI([800, 0, 156], [935, 0, 156], [800, 496, 156], 'cyan', 'Kühlschrank')
+
+        return [schrank_oben, wand, schrank_unten, ks, af]
 
     def aoi_to_point_and_normal(self, aoi):
         return aoi.p1, self.normalize(aoi.n)
