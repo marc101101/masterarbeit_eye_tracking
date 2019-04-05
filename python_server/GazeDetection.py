@@ -10,6 +10,10 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
+from DrawCurrentData import DrawCurrentData
+
+drawClass = DrawCurrentData()
+
 
 class GazeDetection:
     file_name_raw = ''
