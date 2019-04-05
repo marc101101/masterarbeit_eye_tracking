@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from flask import Flask, request
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -17,13 +19,6 @@ def gaze_detection():
     else:
         return "403"
 
-
-@app.route("/config", methods=['GET'])
-def get_config():
-    if request.method == 'GET':
-        return mainClass.get_cam_config(request.args.get('clientId'))
-    else:
-        return "403"
 
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=5000)
