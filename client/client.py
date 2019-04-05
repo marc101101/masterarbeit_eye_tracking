@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 import requests
-
+import json
 
 class Client:
 
@@ -34,7 +34,7 @@ class Client:
                                 raise e
 
                             counter = counter + 1
-                        if (len(frame_to_push) == 21):
+                        if (len(frame_to_push) == 22):
                             print("Message received: " + str(frame_to_push))
                             try:
                                 # outlet.push_sample(frame_to_push)
@@ -60,7 +60,10 @@ class Client:
             'Content-Type': "application/json"
         }
 
-        response = requests.request("POST", url, data=self.format_frame_to_push(frame_to_push), headers=headers)
+        response = requests.request("POST",
+                                    url,
+                                    data=json.dumps(self.format_frame_to_push(frame_to_push)),
+                                    headers=headers)
 
         print(response.text)
 
