@@ -58,12 +58,7 @@ class MyHandler(FileSystemEventHandler, file_to_watch, client_name):
             float(frame_to_push[296]),  # pose_Rx
             float(frame_to_push[297]),  # pose_Ry
             float(frame_to_push[298])  # pose_Rz
-            # float(frame_to_push[13],  # pose_Tx
-            # float(frame_to_push[14],  # pose_Ty
-            # float(frame_to_push[15],  # pose_Tz
-            # float(frame_to_push[16],  # pose_Rx
-            # float(frame_to_push[17],  # pose_Ry
-            # float(frame_to_push[18]   # pose_Rz
+
         ]
         return frame_to_push
 

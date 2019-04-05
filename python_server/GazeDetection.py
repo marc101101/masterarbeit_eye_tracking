@@ -1,57 +1,74 @@
 import numpy as np
 import math
-import json
 import Intersection
 import AOI
+import json
+import datetime
+import time
+import csv
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class GazeDetection:
+    file_name_raw = ''
+    header_file_row = ['client_id', 'system_timestamp', 'frame', 'face_id', 'timestamp', 'confidence', 'success', 'gaze_0_x',
+                       'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x', 'gaze_angle_y',
+                       'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz']
     config = {}
+    config_file_name = 'config/cam_config.json'
 
     def __init__(self):
-        with open('cam_config.json', 'w') as outfile:
-            json.dump(self.config, outfile)
+        self.read_cam_config()
+        self.create_raw_log_file()
 
     def main_method(self, body):
-        if self.valid_body():
-            coords = []
-            directions = []
-
-            # normierte Blickrichtung auf Startkoordinaten addieren
-            gaze_ends = np.swapaxes(np.swapaxes(coords, 0, 1) + np.swapaxes(directions, 0, 1), 0, 1)
-
-            # transformieren
-            TRANSFORMED_COORDS_GAZE = self.apply_transfromation(body, swap=False)
-            gaze_ends = self.apply_transfromation(gaze_ends, swap=False)
-
-            # Blickrichtung zurückrechnen und normalisieren
-            directions = gaze_ends - TRANSFORMED_COORDS_GAZE
-            TRANSFORMED_GAZES = np.array([self.normalize(directions[i]) for i in range(len(directions))])
-
-            aois = self.get_aois()
-
-            # Intersektion Ojekte erstellen
-            intersections = self.get_all_aois_intersection(TRANSFORMED_COORDS_GAZE, TRANSFORMED_GAZES, aois)
-
-            # Kürzeste Entfernung für jeden Punkt
-            distances = np.array(
-                [self.set_closest_intersection_and_get_distance(intersections[i]) for i in range(len(intersections))])
-
-            # Start- und Endpunkte der Blicke (Start = Ende, wenn kein Schnittpunkt => Entfernung INF)
-            coords, gaze_end = self.get_gaze_pairs(TRANSFORMED_COORDS_GAZE, TRANSFORMED_GAZES, distances)
-
-            coords = np.swapaxes(coords, 0, 1)
-            gaze_end = np.swapaxes(gaze_end, 0, 1)
-
+        if self.valid_body(body):
+            self.save_to_raw_log_file(body)
+            self.transform_data(body)
         else:
             return "500"
 
+    def read_cam_config(self):
+        with open(self.config_file_name, 'r') as f:
+            self.config = json.load(f)
+
+    def create_raw_log_file(self):
+        self.file_name_raw = 'gaze_raw_' + str(
+            datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H:%M:%S')) + '.csv'
+        self.write_to_csv(self.header_file_row)
+
+    def write_to_csv(self, row):
+        with open('data/' + self.file_name_raw, 'w') as csvFile:
+            file_writer = csv.writer(csvFile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            file_writer.writerow(row)
+
+    def save_to_raw_log_file(self, data):
+        data.insert(0, time.time())
+        self.write_to_csv(data)
+
+    def get_cam_config(self, client_id):
+        try:
+            return json.dumps(self.config[client_id])
+        except Exception as e:
+            return json.dumps([])
+
+    def transform_data(self, body):
+        coords = []
+        directions = []
+        # normierte Blickrichtung auf Startkoordinaten addieren
+        gaze_ends = np.swapaxes(np.swapaxes(coords, 0, 1) + np.swapaxes(directions, 0, 1), 0, 1)
+        # transformieren
+        TRANSFORMED_COORDS_GAZE = self.apply_transfromation(body, swap=False)
+        gaze_ends = self.apply_transfromation(gaze_ends, swap=False)
+        # Blickrichtung zurückrechnen und normalisieren
+        directions = gaze_ends - TRANSFORMED_COORDS_GAZE
+        TRANSFORMED_GAZES = np.array([self.normalize(directions[i]) for i in range(len(directions))])
+
     def valid_body(self, body):
-        if len(body) > 17:
-            if np.isnan(np.min(body)):
-                return True
-            else:
-                return False
+        if len(body) >= 18:
+            return True
         else:
             return False
 
@@ -212,7 +229,6 @@ class GazeDetection:
         if d < 0:
             return np.inf
         return d
-
 
     def is_not_used(self):
         pass
