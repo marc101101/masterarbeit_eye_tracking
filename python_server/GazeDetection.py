@@ -94,7 +94,7 @@ class GazeDetection:
 
         coords = COORDS_GAZE
         directions = GAZES
-        client_id = body[0]
+        client_id = body['client_id']
 
         # normierte Blickrichtung auf Startkoordinaten addieren
         #gaze_ends = np.swapaxes(np.swapaxes(coords, 0, 1) + np.swapaxes(directions, 0, 1), 0, 1)

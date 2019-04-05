@@ -5,6 +5,9 @@ import requests
 
 class Client:
 
+    ip_address = ""
+    client_name = ""
+
     def __init__(self, ip_address, client_name):
         self.ip_address = ip_address
         self.client_name = client_name
@@ -90,9 +93,9 @@ class Client:
 
 
 if __name__ == "__main__":
-    client = Client(sys.argv[0], sys.argv[1])
+    print("INFO: Client  up and tracking")
+    print("INFO: IP address - " + str(sys.argv[1]))
+    print("INFO: Client name - " + str(sys.argv[2]))
 
-    print("INFO: Observer up and tracking")
-    print("INFO: IP address " + str(sys.argv[0]))
-    print("INFO: Client name" + str(sys.argv[1]))
+    client = Client(sys.argv[1], sys.argv[2])
 
