@@ -31,10 +31,10 @@ class GazeDetection:
     def main_method(self, body):
         if self.valid_body(body):
             self.save_to_raw_log_file(body)
-            transformed_data = self.transform_data(body)
-            self.session_data.append(transformed_data)
-            self.prep_aoi()
-            return "200"
+            return json.dumps(self.transform_data(body).tolist())
+            # self.session_data.append(transformed_data)
+            # self.prep_aoi()
+            # return "200"
         else:
             return "500"
 

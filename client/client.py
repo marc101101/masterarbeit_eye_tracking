@@ -3,6 +3,7 @@ import sys
 import requests
 import json
 
+
 class Client:
 
     ip_address = ""
