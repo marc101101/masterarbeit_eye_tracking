@@ -35,7 +35,7 @@ class Client:
                                 raise e
 
                             counter = counter + 1
-                        if (len(frame_to_push) == 22):
+                        if (len(frame_to_push) >= 23):
                             print("Message received: " + str(frame_to_push))
                             try:
                                 # outlet.push_sample(frame_to_push)
