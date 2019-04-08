@@ -39,8 +39,9 @@ class Client:
                         #if (len(frame_to_push) >= 23):
                             #print("Message received: " + str(frame_to_push))
                         try:
+                            print("Message received: " + str(buff))
                             # outlet.push_sample(frame_to_push)
-                            self.push_to_server(frame_to_push)
+                            # self.push_to_server(frame_to_push)
                         except Exception as e:
                             print(e)
                         buff = ''
