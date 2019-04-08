@@ -23,6 +23,7 @@ class Client:
                 buff += sys.stdin.read(1)
                 if buff.startswith("relevant_entry"):
                     if buff.endswith('\n'):
+                        print("Message received: " + str(buff))
                         frame_to_push = buff[:-1].split(",")
                         frame_to_push.pop(0)
                         counter = 0
@@ -35,13 +36,13 @@ class Client:
                                 raise e
 
                             counter = counter + 1
-                        if (len(frame_to_push) >= 23):
-                            print("Message received: " + str(frame_to_push))
-                            try:
-                                # outlet.push_sample(frame_to_push)
-                                self.push_to_server(frame_to_push)
-                            except Exception as e:
-                                print(e)
+                        #if (len(frame_to_push) >= 23):
+                            #print("Message received: " + str(frame_to_push))
+                        try:
+                            # outlet.push_sample(frame_to_push)
+                            self.push_to_server(frame_to_push)
+                        except Exception as e:
+                            print(e)
                         buff = ''
                         k = k + 1
                 else:
