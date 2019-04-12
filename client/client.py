@@ -40,8 +40,7 @@ class Client:
                             #print("Message received: " + str(frame_to_push))
                         try:
                             print("Message received: " + str(buff))
-                            # outlet.push_sample(frame_to_push)
-                            # self.push_to_server(frame_to_push)
+                            self.push_to_server(frame_to_push)
                         except Exception as e:
                             print(e)
                         buff = ''
@@ -73,11 +72,11 @@ class Client:
     def format_frame_to_push(self, frame_to_push):
         return {
             "client_id": self.client_name,
-            "frame": float(frame_to_push[0]),
-            "face_id": float(frame_to_push[1]),
+            "face_id": float(frame_to_push[0]),
+            "frame": float(frame_to_push[1]),
             "timestamp": float(frame_to_push[2]),
-            "confidence": float(frame_to_push[3]),
-            "success": float(frame_to_push[4]),
+            "success": float(frame_to_push[3]),
+            "confidence": float(frame_to_push[4]),
             "gaze_0_x": float(frame_to_push[5]),
             "gaze_0_y": float(frame_to_push[6]),
             "gaze_0_z": float(frame_to_push[7]),
@@ -94,8 +93,39 @@ class Client:
             "pose_Rz": float(frame_to_push[18]),
             "eye_lmk_X_0": float(frame_to_push[19]),
             "eye_lmk_Y_0": float(frame_to_push[20]),
-            "eye_lmk_Z_0": float(frame_to_push[21])
+            "eye_lmk_Z_0": float(frame_to_push[21]),
+            "eye_lmk_X_1": float(frame_to_push[22]),
+            "eye_lmk_Y_1": float(frame_to_push[23]),
+            "eye_lmk_Z_1": float(frame_to_push[24])
         }
+
+    # Openface Logging: OpenFace/lib/local/Utilities/src/RecorderOpenFace.cpp
+    # std::cout << "relevant_entry" << ","
+    # << face_id << ", "
+    # << frame_number << ", "
+    # << timestamp << ", "
+    # << landmark_detection_success << ", "
+    # << landmark_detection_confidence << ", "
+    # << gaze_direction0.x << ", "
+    # << gaze_direction0.y << ", "
+    # << gaze_direction0.z << ", "
+    # << gaze_direction1.x << ", "
+    # << gaze_direction1.y << ", "
+    # << gaze_direction1.z << ", "
+    # << gaze_angle[0] << ", "
+    # << gaze_angle[1] << ", "
+    # << head_pose[0] << ", "
+    # << head_pose[1] << ", "
+    # << head_pose[2] << ", "
+    # << head_pose[3] << ", "
+    # << head_pose[4] << ", "
+    # << head_pose[5] << ", "
+    # << eye_landmarks3D[0] << ", "
+    # << eye_landmarks3D[55] << ", "
+    # << eye_landmarks3D[110] << ", "
+    # << eye_landmarks3D[1] << ", "
+    # << eye_landmarks3D[56] << ", "
+    # << eye_landmarks3D[111] << std::endl;
 
 
 if __name__ == "__main__":
