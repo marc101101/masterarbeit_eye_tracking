@@ -4,8 +4,6 @@ from flask import Flask, request
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from GazeDetection import GazeDetection
-from flask_socketio import send, emit
-
 
 app = Flask(__name__)
 CORS(app)
