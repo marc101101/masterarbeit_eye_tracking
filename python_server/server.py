@@ -25,5 +25,20 @@ def ping(data):
     socketIO.emit('ping event', data, namespace='/chat')
 
 
+@app.route('/config', methods=['GET'])
+def get_config():
+    if request.method == 'GET':
+        return mainClass.get_cam_config()
+    pass
+
+
+@app.route('/config', methods=['POST'])
+def set_config():
+    if request.method == 'POST':
+        return mainClass.set_cam_config(request.get_json())
+    else:
+        return "403"
+
+
 if __name__ == "__main__":
     socketIO.run(app, host="0.0.0.0", port=5000)

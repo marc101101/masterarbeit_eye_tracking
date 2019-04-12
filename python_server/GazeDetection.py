@@ -80,9 +80,18 @@ class GazeDetection:
         row.insert(1, time.time())
         self.write_to_csv(row)
 
-    def get_cam_config(self, client_id):
+    def get_cam_config(self):
         try:
-            return json.dumps(self.config[client_id])
+            return json.dumps(self.config)
+        except Exception as e:
+            return json.dumps([])
+
+    def set_cam_config(self, config):
+        try:
+            with open('config/cam_config.json', 'w') as outfile:
+                json.dump(config, outfile)
+            self.config = config
+            return json.dumps(config)
         except Exception as e:
             return json.dumps([])
 
