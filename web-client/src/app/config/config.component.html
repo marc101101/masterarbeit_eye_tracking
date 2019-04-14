@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="row">
+    <div class="col s4" style="margin-top: 2rem" *ngFor="let client of config | keyvalue">
+      <div class="card-panel white">
+        <h5>Client_ID: <b>{{client.key}}</b></h5>
+
+        <div *ngFor="let item of client.value | keyvalue">
+          <div class="row" style="margin-bottom:0px">
+              <b>{{item.key}}:</b>
+              <input [(ngModel)]="item.value"><br>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
