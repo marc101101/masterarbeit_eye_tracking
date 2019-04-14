@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from flask import Flask, request
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from GazeDetection import GazeDetection
 
@@ -11,18 +11,20 @@ socketIO = SocketIO(app)
 mainClass = GazeDetection()
 
 
-@app.route("/gazeDetection", methods=['POST'])
-def gaze_detection():
-    if request.method == 'POST':
-        retVal = mainClass.main_method(request.get_json())
-        ping(retVal)
-        return "200"
-    else:
-        return "403"
+# @app.route("/gazeDetection", methods=['POST'])
+# def gaze_detection():
+#     if request.method == 'POST':
+#         retVal = mainClass.main_method(request.get_json())
+#         ping(retVal)
+#         return "200"
+#     else:
+#         return "403"
 
-@app.route('/ping')
-def ping(data):
-    socketIO.emit('ping event', data, namespace='/chat')
+@socketIO.on('message')
+def handle_message(message):
+    print('received message: ' + str(message['client_id']))
+    parsed_data = mainClass.main_method(message)
+    emit('event', parsed_data, broadcast=True)
 
 
 @app.route('/config', methods=['GET'])
