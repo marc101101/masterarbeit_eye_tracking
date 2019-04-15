@@ -31,9 +31,6 @@ export class ConfigService {
     return this.http.get(this.url + "/config", this.httpOptions).pipe(
       map((res: Response) => {
         return res;
-      }),
-      catchError((err: HttpErrorResponse) => {
-        return of(err);
       })
     )
   } 
@@ -45,9 +42,6 @@ export class ConfigService {
     return this.http.post(this.url + "/config", config, this.httpOptions).pipe(
       map((res: Response) => {
         return res;
-      }),
-      catchError((err: HttpErrorResponse) => {
-        return of(err);
       })
     )
   }  

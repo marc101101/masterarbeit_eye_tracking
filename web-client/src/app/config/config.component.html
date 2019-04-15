@@ -35,4 +35,12 @@
         </div>
       </div>
   </div>
+  <div *ngIf="show_error" class="col s12" style="margin-top: 2rem">
+      <div class="card-panel red white-text hover-element">
+        <p class="center-align" style="font-size: 1.5rem">
+          <i class="inline-icon material-icons white-text">error</i>
+          Could not connect to server.
+        </p>
+      </div>
+    </div>
 </div>
