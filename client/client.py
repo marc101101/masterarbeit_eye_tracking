@@ -3,7 +3,7 @@ import sys
 import socketio
 
 
-class Client:
+class ClientGazeLogger:
 
     client_name = ""
     sio = None
@@ -121,5 +121,5 @@ if __name__ == "__main__":
     print("INFO: IP address - " + str(sys.argv[1]))
     print("INFO: Client name - " + str(sys.argv[2]))
 
-    client = Client(sys.argv[1], sys.argv[2])
+    client = ClientGazeLogger(sys.argv[1], sys.argv[2])
 
