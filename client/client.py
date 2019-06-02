@@ -10,8 +10,8 @@ class ClientGazeLogger:
 
     def __init__(self, ip_address, client_name):
         self.client_name = client_name
-        sio = socketio.Client()
-        sio.connect('http://' + ip_address + ':5000')
+        self.sio = socketio.Client()
+        self.sio.connect('http://' + ip_address + ':5000')
 
         self.watch_data_stream()
 
