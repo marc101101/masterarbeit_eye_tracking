@@ -24,7 +24,11 @@ mainClass = GazeDetection()
 def handle_message(message):
     print('received message: ' + str(message['client_id']))
     parsed_data = mainClass.main_method(message)
-    emit('event', parsed_data, broadcast=True)
+    emit_data_object = {
+        'raw': message['client_id'],
+        'parsed_data': parsed_data
+    }
+    emit('event', emit_data_object, broadcast=True)
 
 
 @app.route('/config', methods=['GET'])

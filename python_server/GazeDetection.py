@@ -14,7 +14,7 @@ import numpy as np
 
 class GazeDetection:
     file_name_raw = ''
-    header_file_row = ['client_id', 'system_timestamp', 'frame', 'face_id', 'timestamp', 'confidence', 'success',
+    header_file_row = ['client_id', 'server_timestamp', 'face_id', 'frame', 'timestamp', 'confidence', 'success',
                        'gaze_0_x', 'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x',
                        'gaze_angle_y', 'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz', 'eye_lmk_X_0',
                        'eye_lmk_Y_0', 'eye_lmk_Z_0']
@@ -76,9 +76,39 @@ class GazeDetection:
             file_writer.writerow(row)
 
     def save_to_raw_log_file(self, data):
-        row = list(data.values())
-        row.insert(1, time.time())
+        row = self.map_values(data)
         self.write_to_csv(row)
+
+    def map_values(self, data):
+        return [
+            data["client_id"],
+            time.time(),
+            data["face_id"],
+            data["frame"],
+            data["timestamp"],
+            data["confidence"],
+            data["success"],
+            data["gaze_0_x"],
+            data["gaze_0_y"],
+            data["gaze_0_z"],
+            data["gaze_1_x"],
+            data["gaze_1_y"],
+            data["gaze_1_z"],
+            data["gaze_angle_x"],
+            data["gaze_angle_y"],
+            data["pose_Tx"],
+            data["pose_Ty"],
+            data["pose_Tz"],
+            data["pose_Rx"],
+            data["pose_Ry"],
+            data["pose_Rz"],
+            data["eye_lmk_X_0"],
+            data["eye_lmk_Y_0"],
+            data["eye_lmk_Z_0"],
+            data["eye_lmk_X_1"],
+            data["eye_lmk_Y_1"],
+            data["eye_lmk_Z_1"]
+        ]
 
     def get_cam_config(self):
         try:
