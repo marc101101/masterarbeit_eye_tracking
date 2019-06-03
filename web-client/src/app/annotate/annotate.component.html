@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col s8">
+    <div class="container" st>
+      <h5>Annotate</h5>
+
+      <div class="row">
+        <div class="col s3">
+          <b>Test-Person-ID:</b>
+        </div>
+        <div class="col s9">
+          <div class="input-field inline">
+            <input type="text" [(ngModel)]="test_frame.test_person_id" class="validate">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s3">
+          <b>Position:</b>
+        </div>
+        <div class="col s1" *ngFor="let position of position_list">
+          <a class="waves-effect waves-light btn grey">{{position}}</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s3">
+          <b>AOI:</b>
+        </div>
+        <div class="col s1" *ngFor="let aoi of aoi_list">
+          <a class="waves-effect waves-light btn grey">{{aoi}}</a>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 5rem">
+        <div class="col s3">
+          <a class="waves-effect waves-light btn green" (click)="start()"><i class="material-icons right">play_arrow</i>Start</a>
+        </div>
+        <div class="col s3">
+          <a class="waves-effect waves-light btn blue" (click)="next()"><i class="material-icons right">fast_forward</i>Next</a>
+        </div>
+        <div class="col s3">
+          <a class="waves-effect waves-light btn red" (click)="stop()"><i class="material-icons right">stop</i>Finish</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="col s4">
+    <clients></clients>
+  </div>
+</div>

@@ -10,24 +10,35 @@ import { ConfigService } from './services/config.service';
 import { HttpClientModule } from '@angular/common/http';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClientsComponent } from './clients/clients.component';
+import { AnnotateComponent } from './annotate/annotate.component';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { WebsocketService } from './services/websocket.service';
+
+const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
 @NgModule({
   declarations: [
     AppComponent,
     ConfigComponent,
     HomeComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ClientsComponent,
+    AnnotateComponent
   ],
   imports: [
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule, 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SocketIoModule.forRoot(config)
   ],
   providers: [
     ConfigService,
-    HttpClientModule
+    HttpClientModule,
+    WebsocketService
   ],
   bootstrap: [AppComponent]
 })

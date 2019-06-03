@@ -25,7 +25,7 @@ def handle_message(message):
     print('received message: ' + str(message['client_id']))
     parsed_data = mainClass.main_method(message)
     emit_data_object = {
-        'raw': message['client_id'],
+        'raw': message,
         'parsed_data': parsed_data
     }
     emit('event', emit_data_object, broadcast=True)

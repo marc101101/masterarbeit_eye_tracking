@@ -1,0 +1,35 @@
+<h5 style="margin-top: 2rem">Clients</h5>
+
+<div class="col s12" style="padding-left: 0px;" *ngFor="let client_id of client_keys; let i=index">
+  <div class="card-panel grey lighten-2 black-text hover-element">
+    <div class="row">
+      <div class="col l11">
+        <h5>Client_ID:  {{client_id}}</h5>
+      </div>
+      <div class="col l1">
+        <i *ngIf="clients[client_id].active" class="material-icons green-text iconStyle">brightness_1</i>
+        <i *ngIf="!clients[client_id].active" class="material-icons red-text iconStyle">brightness_1</i>
+      </div>
+    </div>
+
+    <!--LIVE DATA-->
+    <div class="row" *ngIf="clients[client_id].active" style="margin: 0;">
+      <div class="col s12">
+        <i class="material-icons right" style="cursor: pointer;" *ngIf="!clients[client_id].open"
+          (click)="clients[client_id].open = true">keyboard_arrow_down</i>
+        <i class="material-icons right" style="cursor: pointer;" *ngIf="clients[client_id].open"
+          (click)="clients[client_id].open = false">keyboard_arrow_up</i>
+      </div>
+      <div class="col s12" *ngIf="clients[client_id].open">
+        <div class="row">
+          <b>Meta Data:</b>
+          <div class="col s12 dataCol">
+            <div class="dataRow">Timestamp: {{clients[client_id].data.raw.timestamp | date: 'short'}}</div>
+            <div class="dataRow">Frame: {{clients[client_id].data.raw.frame }}</div>
+            <div class="dataRow">Confidence: {{clients[client_id].data.raw.confidence * 100}} %</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

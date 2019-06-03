@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ConfigComponent } from './config/config.component';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AnnotateComponent } from './annotate/annotate.component';
 
 const routes: Routes = [
   { 
@@ -17,6 +18,10 @@ const routes: Routes = [
   { 
     path: 'config', 
     component: ConfigComponent 
+  },
+  { 
+    path: 'annotate', 
+    component: AnnotateComponent 
   },
   { 
     path: '**', 
