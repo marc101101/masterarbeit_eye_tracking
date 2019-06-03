@@ -10,16 +10,6 @@ CORS(app)
 socketIO = SocketIO(app)
 mainClass = GazeDetection()
 
-
-# @app.route("/gazeDetection", methods=['POST'])
-# def gaze_detection():
-#     if request.method == 'POST':
-#         retVal = mainClass.main_method(request.get_json())
-#         ping(retVal)
-#         return "200"
-#     else:
-#         return "403"
-
 @socketIO.on('message')
 def handle_message(message):
     print('received message: ' + str(message['client_id']))
@@ -44,6 +34,21 @@ def set_config():
         return mainClass.set_cam_config(request.get_json())
     else:
         return "403"
+
+@app.route('/annotate/start', methods=['POST'])
+def start_annotate():
+    if request.method == 'POST':
+        return mainClass.start(request.get_json())
+
+@app.route('/annotate/next', methods=['POST'])
+def next_annotate():
+    if request.method == 'POST':
+        return mainClass.next(request.get_json())
+
+@app.route('/annotate/stop', methods=['POST'])
+def stop_annotate():
+    if request.method == 'POST':
+        return mainClass.stop()
 
 
 if __name__ == "__main__":

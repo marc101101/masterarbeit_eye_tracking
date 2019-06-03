@@ -14,10 +14,19 @@ import numpy as np
 
 class GazeDetection:
     file_name_raw = ''
+    file_name_annotation = ''
+    annotation_state = False
+    annotation_test_person_id = 0
+    annotation_pos = 0
+    annotation_aoi = "A1"
     header_file_row = ['client_id', 'server_timestamp', 'face_id', 'frame', 'timestamp', 'confidence', 'success',
                        'gaze_0_x', 'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x',
                        'gaze_angle_y', 'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz', 'eye_lmk_X_0',
                        'eye_lmk_Y_0', 'eye_lmk_Z_0']
+    header_file_annotation = ['client_id', 'annotation_test_person_id', 'annotation_pos', 'annotation_aoi' 'server_timestamp', 'face_id', 'frame', 'timestamp',
+                       'confidence', 'success', 'gaze_0_x', 'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z',
+                       'gaze_angle_x', 'gaze_angle_y', 'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz',
+                       'eye_lmk_X_0', 'eye_lmk_Y_0', 'eye_lmk_Z_0']
     config = {}
     config_file_name = 'config/cam_config.json'
     session_data = []
@@ -31,6 +40,14 @@ class GazeDetection:
     def main_method(self, body):
         if self.valid_body(body):
             self.save_to_raw_log_file(body)
+
+            if(self.annotation_state):
+                row = self.map_values(body)
+                row.insert(1, self.annotation_test_person_id)
+                row.insert(2, self.annotation_pos)
+                row.insert(3, self.annotation_aoi)
+                self.write_to_csv_annotation(row)
+
             return self.transform_data(body).tolist()
         else:
             return "500"
@@ -56,11 +73,39 @@ class GazeDetection:
         #for aoi in aois:
             #drawClass.plot_heatmap(aoi, aoi.title)
 
-# FILE OPERATION METHODS ---------------------------------------------------------
+    # ANNOTATION METHODS ---------------------------------------------------------
+
+    def start(self, test_frame):
+        print("start")
+        self.annotation_test_person_id = test_frame['test_person_id']
+        self.annotation_pos = test_frame['position']
+        self.annotation_aoi = test_frame['aoi']
+        self.create_log_file(test_frame['test_person_id'])
+        self.annotation_state = True
+        return json.dumps("success")
+
+    def next(self, test_frame):
+        self.annotation_pos = test_frame['position']
+        self.annotation_aoi = test_frame['aoi']
+        print("next")
+        return json.dumps("success")
+
+    def stop(self):
+        print("stop")
+        self.file_name_annotation = ''
+        self.annotation_state = False
+        return json.dumps("success")
+
+    # FILE OPERATION METHODS ---------------------------------------------------------
 
     def read_cam_config(self):
         with open(self.config_file_name, 'r') as f:
             self.config = json.load(f)
+
+    def create_log_file(self, test_person_id):
+        self.file_name_annotation = str(test_person_id) + "_annotation_" + str(
+            datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H:%M:%S')) + '.csv'
+        self.write_to_csv_annotation(self.header_file_annotation)
 
     def create_raw_log_file(self):
         self.file_name_raw = 'gaze_raw_' + str(
@@ -69,6 +114,11 @@ class GazeDetection:
 
     def write_to_csv(self, row):
         with open('data/' + self.file_name_raw, 'a') as csvFile:
+            file_writer = csv.writer(csvFile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            file_writer.writerow(row)
+
+    def write_to_csv_annotation(self, row):
+        with open('annotation/' + self.file_name_annotation, 'a') as csvFile:
             file_writer = csv.writer(csvFile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             file_writer.writerow(row)
 

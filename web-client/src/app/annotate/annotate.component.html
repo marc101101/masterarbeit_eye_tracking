@@ -2,6 +2,11 @@
   <div class="col s8">
     <div class="container" st>
       <h5>Annotate</h5>
+      <div class="row">
+        <div class="col s12 green-text">
+          <b *ngIf="recording">RECORDING</b>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col s3">
@@ -19,7 +24,8 @@
           <b>Position:</b>
         </div>
         <div class="col s1" *ngFor="let position of position_list">
-          <a class="waves-effect waves-light btn grey">{{position}}</a>
+          <a class="waves-effect waves-light btn grey" *ngIf="!(test_frame.position == position)">{{position}}</a>
+          <a class="waves-effect waves-light btn" *ngIf="test_frame.position == position">{{position}}</a>
         </div>
       </div>
 
@@ -28,7 +34,8 @@
           <b>AOI:</b>
         </div>
         <div class="col s1" *ngFor="let aoi of aoi_list">
-          <a class="waves-effect waves-light btn grey">{{aoi}}</a>
+            <a class="waves-effect waves-light btn grey" *ngIf="!(test_frame.aoi == aoi)">{{aoi}}</a>
+            <a class="waves-effect waves-light btn" *ngIf="test_frame.aoi == aoi">{{aoi}}</a>
         </div>
       </div>
 

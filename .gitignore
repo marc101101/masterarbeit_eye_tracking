@@ -6,3 +6,5 @@
 python_server/data/
 
 python_server/__pycache__/
+
+python_server/annotation/
