@@ -16,6 +16,7 @@ import { AnnotateComponent } from './annotate/annotate.component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { WebsocketService } from './services/websocket.service';
 import { AnnotateService } from './services/annotate.service';
+import { VisualizerComponent } from './visualizer/visualizer.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
@@ -26,7 +27,8 @@ const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
     HomeComponent,
     PageNotFoundComponent,
     ClientsComponent,
-    AnnotateComponent
+    AnnotateComponent,
+    VisualizerComponent
   ],
   imports: [
     HttpClientModule,

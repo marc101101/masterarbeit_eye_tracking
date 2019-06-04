@@ -19,7 +19,7 @@ export class AnnotateComponent implements OnInit {
   public recording: boolean = false;
 
   public position_list: Array<Number> = [1,2,3,4];
-  public aoi_list: Array<string> = ["A1","A2","A3","B1","B2"];
+  public aoi_list: Array<string> = ["A1","A2","A3","B1","B2","B3","C1","C2","C3"];
 
   ngOnInit() {
   }
@@ -29,7 +29,6 @@ export class AnnotateComponent implements OnInit {
       this.annotateService.annotate(this.test_frame, "start").subscribe(res => {
         console.log("Start");
         this.recording = true;
-        this.resetFrame();          
       });
     }
   }
@@ -52,23 +51,27 @@ export class AnnotateComponent implements OnInit {
   }
 
   private resetFrame() {
-    this.test_frame.test_person_id = 0;
     this.test_frame.position = 1;
     this.test_frame.aoi = "A1";
   }
 
-  private setPosition() {
-    if(this.position_list.length < this.test_frame.position){
-      this.test_frame.position = 0;
-      this.setAoi();
+  private setPosition() {    
+    if((this.position_list.length == this.test_frame.position) && (this.aoi_list.length-1 == this.aoi_list.indexOf(this.test_frame.aoi))){
+      this.stop();
     }
     else{
-      this.test_frame.position = this.test_frame.position + 1;
+      if(this.position_list.length <= this.test_frame.position){
+        this.test_frame.position = 1;
+        this.setAoi();
+      }
+      else{
+        this.test_frame.position = this.test_frame.position + 1;
+      }
     }
   }
 
   private setAoi(){
-    if(this.aoi_list.length < this.aoi_list.indexOf(this.test_frame.aoi)){
+    if(this.aoi_list.length <= this.aoi_list.indexOf(this.test_frame.aoi)){
       this.test_frame.aoi = this.aoi_list[0];
       this.setAoi();
     }
@@ -76,4 +79,6 @@ export class AnnotateComponent implements OnInit {
       this.test_frame.aoi = this.aoi_list[this.aoi_list.indexOf(this.test_frame.aoi) + 1];
     }
   }
+
+
 }

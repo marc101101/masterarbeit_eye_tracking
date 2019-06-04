@@ -4,6 +4,7 @@ import { ConfigComponent } from './config/config.component';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AnnotateComponent } from './annotate/annotate.component';
+import { VisualizerComponent } from './visualizer/visualizer.component';
 
 const routes: Routes = [
   { 
@@ -22,6 +23,10 @@ const routes: Routes = [
   { 
     path: 'annotate', 
     component: AnnotateComponent 
+  },
+  { 
+    path: 'visualizer', 
+    component: VisualizerComponent 
   },
   { 
     path: '**', 

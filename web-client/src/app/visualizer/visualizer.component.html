@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="row">
+    <div class="col s12">
+      <h5>Please select annotation csv ...</h5>
+    </div>
+    <div class="col s12">
+      <input type='file' (change)="fileChanged($event)">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12">
+      <h5>Visualization - {{file.name}}</h5>
+    </div>
+    <div class="col l12" style="height: 200px!important;">
+      <canvas #graphCanvas style="position: relative; height:40vh; width:80vw"></canvas>
+    </div>
+  </div>
+
+</div>

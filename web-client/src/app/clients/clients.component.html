@@ -29,6 +29,40 @@
             <div class="dataRow">Confidence: {{clients[client_id].data.raw.confidence * 100}} %</div>
           </div>
         </div>
+        <div class="row">
+          <div class="col s12" style="padding: 0px">
+            <b>Gaze:</b>
+          </div>
+          <div class="col s6 dataCol">
+            <div class="dataRow">gaze_0_x: {{clients[client_id].data.raw.gaze_0_x }}</div>
+            <div class="dataRow">gaze_0_y: {{clients[client_id].data.raw.gaze_0_y }}</div>
+            <div class="dataRow">gaze_0_z: {{clients[client_id].data.raw.gaze_0_z }}</div>
+          </div>
+          <div class="col s6 dataCol">
+            <div class="dataRow">gaze_1_x: {{clients[client_id].data.raw.gaze_1_x }}</div>
+            <div class="dataRow">gaze_1_y: {{clients[client_id].data.raw.gaze_1_y }}</div>
+            <div class="dataRow">gaze_1_z: {{clients[client_id].data.raw.gaze_1_z }}</div>
+          </div>
+          <div class="col s6 dataCol">
+              <div class="dataRow">gaze_angle_x: {{clients[client_id].data.raw.gaze_angle_x }}</div>
+              <div class="dataRow">gaze_angle_y: {{clients[client_id].data.raw.gaze_angle_y }}</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12" style="padding: 0px">
+            <b>Position:</b>
+          </div>
+          <div class="col s6 dataCol">
+            <div class="dataRow">pose_Rx: {{clients[client_id].data.raw.pose_Rx }}</div>
+            <div class="dataRow">pose_Ry: {{clients[client_id].data.raw.pose_Ry }}</div>
+            <div class="dataRow">pose_Rz: {{clients[client_id].data.raw.pose_Rz }}</div>
+          </div>
+          <div class="col s6 dataCol">
+            <div class="dataRow">pose_Tx: {{clients[client_id].data.raw.pose_Tx }}</div>
+            <div class="dataRow">pose_Ty: {{clients[client_id].data.raw.pose_Ty }}</div>
+            <div class="dataRow">pose_Tz: {{clients[client_id].data.raw.pose_Tz }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

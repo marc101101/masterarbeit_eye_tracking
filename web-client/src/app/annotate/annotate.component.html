@@ -1,6 +1,6 @@
 <div class="row">
-  <div class="col s8">
-    <div class="container" st>
+  <div class="col s8" style="position: fixed">
+    <div class="container">
       <h5>Annotate</h5>
       <div class="row">
         <div class="col s12 green-text">
@@ -23,37 +23,37 @@
         <div class="col s3">
           <b>Position:</b>
         </div>
-        <div class="col s1" *ngFor="let position of position_list">
-          <a class="waves-effect waves-light btn grey" *ngIf="!(test_frame.position == position)">{{position}}</a>
-          <a class="waves-effect waves-light btn" *ngIf="test_frame.position == position">{{position}}</a>
+        <div class="col s2" *ngFor="let position of position_list">
+          <a class="waves-effect waves-light btn grey annotateButton" *ngIf="!(test_frame.position == position)" (click)="test_frame.position = position">{{position}}</a>
+          <a class="waves-effect waves-light btn annotateButton" *ngIf="test_frame.position == position">{{position}}</a>
         </div>
       </div>
 
       <div class="row">
-        <div class="col s3">
+        <div class="col s3" style="height: 15rem;">
           <b>AOI:</b>
         </div>
-        <div class="col s1" *ngFor="let aoi of aoi_list">
-            <a class="waves-effect waves-light btn grey" *ngIf="!(test_frame.aoi == aoi)">{{aoi}}</a>
-            <a class="waves-effect waves-light btn" *ngIf="test_frame.aoi == aoi">{{aoi}}</a>
+        <div class="col s2" style="padding-top:0.5rem" *ngFor="let aoi of aoi_list">
+            <a class="waves-effect waves-light btn grey annotateButton" *ngIf="!(test_frame.aoi == aoi)"  (click)="test_frame.aoi = aoi">{{aoi}}</a>
+            <a class="waves-effect waves-light btn annotateButton" *ngIf="test_frame.aoi == aoi">{{aoi}}</a>
         </div>
       </div>
 
       <div class="row" style="margin-top: 5rem">
         <div class="col s3">
-          <a class="waves-effect waves-light btn green" (click)="start()"><i class="material-icons right">play_arrow</i>Start</a>
+          <button class="waves-effect waves-light btn green annotateMainButton" (click)="start()" [disabled]="recording"><i class="material-icons right">play_arrow</i>Start</button>
+        </div>
+        <div class="col s6">
+          <button class="waves-effect waves-light btn blue annotateMainButton" (click)="next()" [disabled]="!recording"><i class="material-icons right">fast_forward</i>Next</button>
         </div>
         <div class="col s3">
-          <a class="waves-effect waves-light btn blue" (click)="next()"><i class="material-icons right">fast_forward</i>Next</a>
-        </div>
-        <div class="col s3">
-          <a class="waves-effect waves-light btn red" (click)="stop()"><i class="material-icons right">stop</i>Finish</a>
+          <button class="waves-effect waves-light btn red annotateMainButton" (click)="stop()" [disabled]="!recording"><i class="material-icons right">stop</i>Finish</button>
         </div>
       </div>
 
     </div>
   </div>
-  <div class="col s4">
+  <div class="col s4" style="float:right">
     <clients></clients>
   </div>
 </div>
