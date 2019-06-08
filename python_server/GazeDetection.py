@@ -23,6 +23,7 @@ class GazeDetection:
                        'gaze_0_x', 'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x',
                        'gaze_angle_y', 'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz', 'eye_lmk_X_0',
                        'eye_lmk_Y_0', 'eye_lmk_Z_0']
+
     header_file_annotation = ['client_id', 'annotation_test_person_id', 'annotation_pos', 'annotation_aoi', 'server_timestamp',
                               'face_id', 'frame', 'timestamp', 'confidence', 'success', 'gaze_0_x', 'gaze_0_y', 'gaze_0_z',
                               'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x', 'gaze_angle_y', 'pose_Tx', 'pose_Ty',
@@ -95,6 +96,13 @@ class GazeDetection:
         self.file_name_annotation = ''
         self.annotation_state = False
         return json.dumps("success")
+
+    def saveMetaDataOfAnnotation(self, meta):
+        filename = "annotation/meta/" + str(meta['test_person_id']) + "_meta_" + str(
+            datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H:%M:%S')) + '.json'
+        with open(filename, 'w') as outfile:
+            json.dump(meta, outfile)
+            return json.dumps("success")
 
     # FILE OPERATION METHODS ---------------------------------------------------------
 

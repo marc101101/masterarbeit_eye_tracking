@@ -21,6 +21,13 @@ export class AnnotateService {
 
   constructor(public http: HttpClient) { }
 
+  sendMeta(meta_data): Observable<any>{
+    return this.http.post(this.url + "/meta/", meta_data, this.httpOptions).pipe(
+      map((res: Response) => {
+        return res;
+      })
+    )
+  } 
 
   annotate(test_frame, method:string): Observable<any>{
     return this.http.post(this.url + "/annotate/" + method, test_frame, this.httpOptions).pipe(

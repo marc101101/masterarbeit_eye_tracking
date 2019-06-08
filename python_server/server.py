@@ -50,6 +50,11 @@ def stop_annotate():
     if request.method == 'POST':
         return mainClass.stop()
 
+@app.route('/meta/', methods=['POST'])
+def meta():
+    if request.method == 'POST':
+        return mainClass.saveMetaDataOfAnnotation(request.get_json())
+
 
 if __name__ == "__main__":
     socketIO.run(app, host="0.0.0.0", port=5000)
