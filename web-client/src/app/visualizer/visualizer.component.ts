@@ -5,6 +5,8 @@ import {
   ViewChild
 } from '@angular/core';
 
+declare var require: any
+
 var chartJs = require('chart.js');
 
 @Component({
