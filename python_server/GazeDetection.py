@@ -16,26 +16,24 @@ class GazeDetection:
     file_name_raw = ''
     file_name_annotation = ''
     annotation_state = False
-    annotation_test_person_id = 0
-    annotation_pos = 0
-    annotation_aoi = "A1"
-    header_file_row = ['client_id', 'server_timestamp', 'face_id', 'frame', 'timestamp', 'confidence', 'success',
-                       'gaze_0_x', 'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x',
-                       'gaze_angle_y', 'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz', 'eye_lmk_X_0',
-                       'eye_lmk_Y_0', 'eye_lmk_Z_0']
+    annotation_test_person_id = None
+    annotation_pos = None
+    annotation_aoi = None
+    header_file_row = []
 
-    header_file_annotation = ['client_id', 'annotation_test_person_id', 'annotation_pos', 'annotation_aoi', 'server_timestamp',
-                              'face_id', 'frame', 'timestamp', 'confidence', 'success', 'gaze_0_x', 'gaze_0_y', 'gaze_0_z',
-                              'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x', 'gaze_angle_y', 'pose_Tx', 'pose_Ty',
-                              'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz', 'eye_lmk_X_0', 'eye_lmk_Y_0', 'eye_lmk_Z_0']
+    header_file_annotation = []
     config = {}
     config_file_name = 'config/cam_config.json'
+    header_csv_config_file_name = 'config/header_csv_config.json'
     session_data = []
     TRANSFORMED_COORDS_GAZE = 0.0
     TRANSFORMED_GAZES = 0.0
 
     def __init__(self):
-        self.read_cam_config()
+        self.config = self.read_config(self.config_file_name)
+        self.header_file_row = self.read_config(self.header_csv_config_file_name)['raw_header']
+        self.header_file_annotation = self.read_config(self.header_csv_config_file_name)['annotation_header']
+
         self.create_raw_log_file()
 
     def main_method(self, body):
@@ -44,9 +42,6 @@ class GazeDetection:
 
             if(self.annotation_state):
                 row = self.map_values(body)
-                row.insert(1, self.annotation_test_person_id)
-                row.insert(2, self.annotation_pos)
-                row.insert(3, self.annotation_aoi)
                 self.write_to_csv_annotation(row)
 
             return self.transform_data(body).tolist()
@@ -106,9 +101,9 @@ class GazeDetection:
 
     # FILE OPERATION METHODS ---------------------------------------------------------
 
-    def read_cam_config(self):
-        with open(self.config_file_name, 'r') as f:
-            self.config = json.load(f)
+    def read_config(self, file_name):
+        with open(file_name, 'r') as f:
+            return json.load(f)
 
     def create_log_file(self, test_person_id):
         self.file_name_annotation = str(test_person_id) + "_annotation_" + str(
@@ -135,20 +130,20 @@ class GazeDetection:
         self.write_to_csv(row)
 
     def map_values(self, data):
-        return [
+
+        return_row = [
             data["client_id"],
             time.mktime(time.gmtime()),
             data["face_id"],
-            data["frame"],
-            data["timestamp"],
-            data["confidence"],
-            data["success"],
-            data["gaze_0_x"],
-            data["gaze_0_y"],
-            data["gaze_0_z"],
-            data["gaze_1_x"],
-            data["gaze_1_y"],
-            data["gaze_1_z"],
+            data["frame_number"],
+            data["landmark_detection_success"],
+            data["landmark_detection_confidence"],
+            data["gaze_direction_0_x"],
+            data["gaze_direction_0_y"],
+            data["gaze_direction_0_z"],
+            data["gaze_direction_0_x"],
+            data["gaze_direction_0_y"],
+            data["gaze_direction_0_z"],
             data["gaze_angle_x"],
             data["gaze_angle_y"],
             data["pose_Tx"],
@@ -156,14 +151,35 @@ class GazeDetection:
             data["pose_Tz"],
             data["pose_Rx"],
             data["pose_Ry"],
-            data["pose_Rz"],
-            data["eye_lmk_X_0"],
-            data["eye_lmk_Y_0"],
-            data["eye_lmk_Z_0"],
-            data["eye_lmk_X_1"],
-            data["eye_lmk_Y_1"],
-            data["eye_lmk_Z_1"]
+            data["pose_Rz"]
         ]
+
+        number = 0
+        while(number <= 55):
+            return_row.append(data["eye_lmk_x_" + number])
+
+        number = 0
+        while (number <= 55):
+            return_row.append(data["eye_lmk_y_" + number])
+
+        number = 0
+        while (number <= 55):
+            return_row.append(data["eye_lmk_X_" + number])
+
+        number = 0
+        while (number <= 55):
+            return_row.append(data["eye_lmk_Y_" + number])
+
+        number = 0
+        while (number <= 55):
+            return_row.append(data["eye_lmk_Z_" + number])
+
+        if(self.annotation_state):
+            return_row.insert(1, self.annotation_test_person_id)
+            return_row.insert(2, self.annotation_pos)
+            return_row.insert(3, self.annotation_aoi)
+
+        return return_row
 
     def get_cam_config(self):
         try:
