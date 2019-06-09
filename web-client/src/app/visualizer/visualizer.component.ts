@@ -108,6 +108,7 @@ export class VisualizerComponent implements OnInit {
           data: this.createDataRow(element.name, value),
           type: 'line',
           borderColor: element.color,
+          backgroundColor: element.color,
           pointRadius: 0,
           fill: false,
           lineTension: 0,
