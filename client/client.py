@@ -1,7 +1,8 @@
 #!/usr/bin/python
 import sys
 import socketio
-import json
+import time
+import ast
 
 
 class ClientGazeLogger:
@@ -27,6 +28,9 @@ class ClientGazeLogger:
                     if buff.endswith('\n'):
                         print("Message received!")
                         message_to_push = str(buff)[15:]
+                        message_to_push = ast.literal_eval(message_to_push)
+                        message_to_push['timestamp'] = time.time()
+                        message_to_push['client_id'] = self.client_name
                         try:
                             self.push_to_server(message_to_push)
                         except Exception as e:
@@ -51,7 +55,7 @@ class ClientGazeLogger:
             "client_id": self.client_name,
             "face_id": float(frame_to_push[0]),
             "frame": float(frame_to_push[1]),
-            "timestamp": float(frame_to_push[2]),
+            "timestamp": time.time(),
             "success": float(frame_to_push[3]),
             "confidence": float(frame_to_push[4]),
             "gaze_0_x": float(frame_to_push[5]),
