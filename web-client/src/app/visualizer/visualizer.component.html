@@ -12,6 +12,11 @@
     <div class="col s12">
       <h5>Visualization - {{file.name}}</h5>
     </div>
+    <div class="col s12">
+      <select [(ngModel)]="selectedValue" style="display: block" (change)="changed($event)">
+        <option *ngFor="let k of keys" [ngValue]="k">{{k}}</option>
+      </select>
+    </div>
     <div class="col l12" style="height: 200px!important;">
       <canvas #graphCanvas style="position: relative; height:40vh; width:80vw"></canvas>
     </div>

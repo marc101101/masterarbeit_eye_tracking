@@ -26,7 +26,7 @@
           <div class="col s12 dataCol">
             <div class="dataRow">Timestamp: {{clients[client_id].data.raw.timestamp | date: 'short'}}</div>
             <div class="dataRow">Frame: {{clients[client_id].data.raw.frame }}</div>
-            <div class="dataRow">Confidence: {{clients[client_id].data.raw.confidence * 100}} %</div>
+            <div class="dataRow">Confidence: {{clients[client_id].data.raw.landmark_detection_confidence * 100}} %</div>
           </div>
         </div>
         <div class="row">
@@ -34,14 +34,14 @@
             <b>Gaze:</b>
           </div>
           <div class="col s6 dataCol">
-            <div class="dataRow">gaze_0_x: {{clients[client_id].data.raw.gaze_0_x }}</div>
-            <div class="dataRow">gaze_0_y: {{clients[client_id].data.raw.gaze_0_y }}</div>
-            <div class="dataRow">gaze_0_z: {{clients[client_id].data.raw.gaze_0_z }}</div>
+            <div class="dataRow">gaze_0_x: {{clients[client_id].data.raw.gaze_direction_0_x }}</div>
+            <div class="dataRow">gaze_0_y: {{clients[client_id].data.raw.gaze_direction_0_y }}</div>
+            <div class="dataRow">gaze_0_z: {{clients[client_id].data.raw.gaze_direction_0_z }}</div>
           </div>
           <div class="col s6 dataCol">
-            <div class="dataRow">gaze_1_x: {{clients[client_id].data.raw.gaze_1_x }}</div>
-            <div class="dataRow">gaze_1_y: {{clients[client_id].data.raw.gaze_1_y }}</div>
-            <div class="dataRow">gaze_1_z: {{clients[client_id].data.raw.gaze_1_z }}</div>
+            <div class="dataRow">gaze_1_x: {{clients[client_id].data.raw.gaze_direction_0_x }}</div>
+            <div class="dataRow">gaze_1_y: {{clients[client_id].data.raw.gaze_direction_0_y }}</div>
+            <div class="dataRow">gaze_1_z: {{clients[client_id].data.raw.gaze_direction_0_z }}</div>
           </div>
           <div class="col s6 dataCol">
               <div class="dataRow">gaze_angle_x: {{clients[client_id].data.raw.gaze_angle_x }}</div>
