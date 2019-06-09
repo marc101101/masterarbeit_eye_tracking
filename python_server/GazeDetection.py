@@ -154,22 +154,27 @@ class GazeDetection:
         number = 0
         while(number <= 55):
             return_row.append(data["eye_lmk_x_" + str(number)])
+            number += 1
 
         number = 0
         while (number <= 55):
             return_row.append(data["eye_lmk_y_" + str(number)])
+            number += 1
 
         number = 0
         while (number <= 55):
             return_row.append(data["eye_lmk_X_" + str(number)])
+            number += 1
 
         number = 0
         while (number <= 55):
             return_row.append(data["eye_lmk_Y_" + str(number)])
+            number += 1
 
         number = 0
         while (number <= 55):
             return_row.append(data["eye_lmk_Z_" + str(number)])
+            number += 1
 
         if(self.annotation_state):
             return_row.insert(1, self.annotation_test_person_id)
@@ -197,7 +202,7 @@ class GazeDetection:
 
     def transform_data(self, body):
         COORDS_GAZE = np.array([body['eye_lmk_X_0'], body['eye_lmk_Y_0'], body['eye_lmk_Z_0']])
-        GAZES = np.array([body['gaze_0_x'], body['gaze_0_y'], body['gaze_0_y']])
+        GAZES = np.array([body['gaze_direction_0_x'], body['gaze_direction_0_y'], body['gaze_direction_0_z']])
 
         coords = COORDS_GAZE
         directions = GAZES
