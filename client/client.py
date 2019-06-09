@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys
 import socketio
+import json
 
 
 class ClientGazeLogger:
@@ -24,22 +25,10 @@ class ClientGazeLogger:
                 buff += sys.stdin.read(1)
                 if buff.startswith("relevant_entry"):
                     if buff.endswith('\n'):
-                        print("Message received: " + str(buff))
-                        frame_to_push = buff[:-1].split(",")
-                        frame_to_push.pop(0)
-                        counter = 0
-                        for i in frame_to_push:
-                            try:
-                                frame_to_push[counter] = float(i)
-                                pass
-                            except Exception as e:
-                                frame_to_push[counter] = 0
-                                raise e
-
-                            counter = counter + 1
+                        print("Message received!")
+                        message_to_push = json.load(str(buff)[15:])
                         try:
-                            print("Message received: " + str(buff))
-                            self.push_to_server(frame_to_push)
+                            self.push_to_server(message_to_push)
                         except Exception as e:
                             print(e)
                         buff = ''
@@ -55,7 +44,7 @@ class ClientGazeLogger:
         print("End of Log: " + str(k))
 
     def push_to_server(self, message):
-        self.sio.emit('message', self.format_frame_to_push(message))
+        self.sio.emit('message', message)
 
     def format_frame_to_push(self, frame_to_push):
         return {
