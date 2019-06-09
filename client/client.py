@@ -26,7 +26,7 @@ class ClientGazeLogger:
                 if buff.startswith("relevant_entry"):
                     if buff.endswith('\n'):
                         print("Message received!")
-                        message_to_push = json.load(str(buff)[15:])
+                        message_to_push = str(buff)[15:]
                         try:
                             self.push_to_server(message_to_push)
                         except Exception as e:
