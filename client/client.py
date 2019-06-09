@@ -9,13 +9,26 @@ class ClientGazeLogger:
 
     client_name = ""
     sio = None
+    connection_attempt = 0
 
     def __init__(self, ip_address, client_name):
         self.client_name = client_name
         self.sio = socketio.Client()
-        self.sio.connect('http://' + ip_address + ':5000')
+        try:
+            self.connect_to_socket( ip_address)
+        except Exception as e:
+            print("Server not reachable ... Try to connect")
+            self.connect_to_socket(ip_address)
 
         self.watch_data_stream()
+
+    def connect_to_socket(self, ip_address):
+        if(self.connection_attempt <= 5):
+            self.connection_attempt += 1
+            self.sio.connect('http://' + ip_address + ':5000')
+        else:
+            print("Not able to connect to server. Try again later.")
+            sys.exit()
 
     def watch_data_stream(self):
         k = 0
@@ -49,64 +62,6 @@ class ClientGazeLogger:
 
     def push_to_server(self, message):
         self.sio.emit('message', message)
-
-    def format_frame_to_push(self, frame_to_push):
-        return {
-            "client_id": self.client_name,
-            "face_id": float(frame_to_push[0]),
-            "frame": float(frame_to_push[1]),
-            "timestamp": time.time(),
-            "success": float(frame_to_push[3]),
-            "confidence": float(frame_to_push[4]),
-            "gaze_0_x": float(frame_to_push[5]),
-            "gaze_0_y": float(frame_to_push[6]),
-            "gaze_0_z": float(frame_to_push[7]),
-            "gaze_1_x": float(frame_to_push[8]),
-            "gaze_1_y": float(frame_to_push[9]),
-            "gaze_1_z": float(frame_to_push[10]),
-            "gaze_angle_x": float(frame_to_push[11]),
-            "gaze_angle_y": float(frame_to_push[12]),
-            "pose_Tx": float(frame_to_push[13]),
-            "pose_Ty": float(frame_to_push[14]),
-            "pose_Tz": float(frame_to_push[15]),
-            "pose_Rx": float(frame_to_push[16]),
-            "pose_Ry": float(frame_to_push[17]),
-            "pose_Rz": float(frame_to_push[18]),
-            "eye_lmk_X_0": float(frame_to_push[19]),
-            "eye_lmk_Y_0": float(frame_to_push[20]),
-            "eye_lmk_Z_0": float(frame_to_push[21]),
-            "eye_lmk_X_1": float(frame_to_push[22]),
-            "eye_lmk_Y_1": float(frame_to_push[23]),
-            "eye_lmk_Z_1": float(frame_to_push[24])
-        }
-
-    # Openface Logging: OpenFace/lib/local/Utilities/src/RecorderOpenFace.cpp
-    # std::cout << "relevant_entry" << ","
-    # << face_id << ", "
-    # << frame_number << ", "
-    # << timestamp << ", "
-    # << landmark_detection_success << ", "
-    # << landmark_detection_confidence << ", "
-    # << gaze_direction0.x << ", "
-    # << gaze_direction0.y << ", "
-    # << gaze_direction0.z << ", "
-    # << gaze_direction1.x << ", "
-    # << gaze_direction1.y << ", "
-    # << gaze_direction1.z << ", "
-    # << gaze_angle[0] << ", "
-    # << gaze_angle[1] << ", "
-    # << head_pose[0] << ", "
-    # << head_pose[1] << ", "
-    # << head_pose[2] << ", "
-    # << head_pose[3] << ", "
-    # << head_pose[4] << ", "
-    # << head_pose[5] << ", "
-    # << eye_landmarks3D[0] << ", "
-    # << eye_landmarks3D[55] << ", "
-    # << eye_landmarks3D[110] << ", "
-    # << eye_landmarks3D[1] << ", "
-    # << eye_landmarks3D[56] << ", "
-    # << eye_landmarks3D[111] << std::endl;
 
 
 if __name__ == "__main__":
