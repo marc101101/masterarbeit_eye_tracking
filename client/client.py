@@ -9,26 +9,13 @@ class ClientGazeLogger:
 
     client_name = ""
     sio = None
-    connection_attempt = 0
 
     def __init__(self, ip_address, client_name):
         self.client_name = client_name
         self.sio = socketio.Client()
-        try:
-            self.connect_to_socket( ip_address)
-        except Exception as e:
-            print("Server not reachable ... Try to connect")
-            self.connect_to_socket(ip_address)
+        self.sio.connect('http://' + ip_address + ':5000')
 
         self.watch_data_stream()
-
-    def connect_to_socket(self, ip_address):
-        if(self.connection_attempt <= 5):
-            self.connection_attempt += 1
-            self.sio.connect('http://' + ip_address + ':5000')
-        else:
-            print("Not able to connect to server. Try again later.")
-            sys.exit()
 
     def watch_data_stream(self):
         k = 0
