@@ -44,6 +44,7 @@ class ClientGazeLogger:
                         message_to_push = ast.literal_eval(message_to_push)
                         message_to_push['timestamp'] = time.time()
                         message_to_push['client_id'] = self.client_name
+                        print(message_to_push)
                         try:
                             self.push_to_server(message_to_push)
                         except Exception as e:

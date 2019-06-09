@@ -37,16 +37,13 @@ class GazeDetection:
         self.create_raw_log_file()
 
     def main_method(self, body):
-        if self.valid_body(body):
-            self.save_to_raw_log_file(body)
+        self.save_to_raw_log_file(body)
 
-            if(self.annotation_state):
-                row = self.map_values(body)
-                self.write_to_csv_annotation(row)
+        if(self.annotation_state):
+            row = self.map_values(body)
+            self.write_to_csv_annotation(row)
 
-            return self.transform_data(body).tolist()
-        else:
-            return "500"
+        return self.transform_data(body).tolist()
 
     def prep_aoi(self):
         aois = self.get_aois()
@@ -156,23 +153,23 @@ class GazeDetection:
 
         number = 0
         while(number <= 55):
-            return_row.append(data["eye_lmk_x_" + number])
+            return_row.append(data["eye_lmk_x_" + str(number)])
 
         number = 0
         while (number <= 55):
-            return_row.append(data["eye_lmk_y_" + number])
+            return_row.append(data["eye_lmk_y_" + str(number)])
 
         number = 0
         while (number <= 55):
-            return_row.append(data["eye_lmk_X_" + number])
+            return_row.append(data["eye_lmk_X_" + str(number)])
 
         number = 0
         while (number <= 55):
-            return_row.append(data["eye_lmk_Y_" + number])
+            return_row.append(data["eye_lmk_Y_" + str(number)])
 
         number = 0
         while (number <= 55):
-            return_row.append(data["eye_lmk_Z_" + number])
+            return_row.append(data["eye_lmk_Z_" + str(number)])
 
         if(self.annotation_state):
             return_row.insert(1, self.annotation_test_person_id)
@@ -255,12 +252,6 @@ class GazeDetection:
             return x
 
 # HELPER METHODS ----------------------------------------------------------------
-
-    def valid_body(self, body):
-        if len(body) >= 23:
-            return True
-        else:
-            return False
 
     def normalize(self, x):
         retVal = x / np.linalg.norm(x)
