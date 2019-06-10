@@ -24,7 +24,6 @@ class ClientGazeLogger:
             buff = ''
             while True:
                 buff += sys.stdin.read(1)
-                print(buff)
                 if buff.startswith("relevant_entry"):
                     if buff.endswith('\n'):
                         print("Message received!" + str(time.time()))
