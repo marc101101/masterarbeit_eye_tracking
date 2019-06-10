@@ -73,7 +73,9 @@ export class AnnotateComponent  {
 
   next(){
     this.annotateService.annotate(this.test_frame, "next").subscribe(res => {
-      console.log("Next");    
+      console.log("Next");
+      console.log(Date.now());
+      console.log(new Date(Date.now()));   
       this.setAoi();
       this.pauseTimer();
       this.startTimer();

@@ -121,9 +121,7 @@ export class VisualizerComponent implements OnInit {
 
   createDataRow(client, value){
     let retVal = [];
-    this.data.forEach(element => { 
-      console.log(element);
-      
+    this.data.forEach(element => {       
       if(element.client_id == client){    
         retVal.push({
           't': parseInt(element['server_timestamp'])*1000,
