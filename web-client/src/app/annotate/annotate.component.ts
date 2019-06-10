@@ -16,7 +16,7 @@ export class AnnotateComponent  {
     "aoi": null
   };
 
-  public timeLeft: number = 5;
+  public timeLeft: number = 7;
   public interval;
   public recording: boolean = false;
 
