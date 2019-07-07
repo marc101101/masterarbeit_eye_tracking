@@ -16,12 +16,12 @@ export class AnnotateComponent  {
     "aoi": null
   };
 
-  public timeLeft: number = 7;
+  public timeLeft: number = 5;
   public interval;
   public recording: boolean = false;
 
   public position_list: Array<Number> = [1,2,3,4,5];
-  public aoi_list: Array<Number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29];
+  public aoi_list: Array<Number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {    
