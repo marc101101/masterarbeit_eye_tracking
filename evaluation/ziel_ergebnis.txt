@@ -1,0 +1,25 @@
+Frage 1: Gesamtzahl der gesammelten Daten
+Ziel: Ersten Überblick über die Daten. Was ist die absoulte Zahl an erkannten Blicken pro Nutzer. Welche Nutzer haben besonders viele Blicke, welche extrem wenig.
+Ergebnis: Besonders viele werden bei 12, 36, 06, 14, 32, 05, 34, 24, 48 erkannt. Fast keine bei 28, 41, 19, 11, 39, 02, 39.
+
+Frage 2: Verhältnis von “Erkannt” und “Nicht-Erkannt”
+Ziel: Wie groß ist der Teil der irrelevanten Informationen (Nicht-Erkannt), im Verhältnis zu relevanten Informationen (Erkannt).
+Ergebnis: Verhältnis zwischen “Nicht-Erkannt” (97.77%) und Erkannt”(2.23%). Liegt einerseits daran, dass Clients bevor das erste mal ein Gesicht erkannt wird, 
+mit einer Framerate von 24 fps laufen, dadurch werden viel mehr "Nicht-Erkannt" erzeugt. Zudem steht der Tester nicht permanent vor allen Cams. Würde man das auf Clientseite
+schon rausfiltern, könnte 97,77% des Netzwerktraffics reduziert werden.
+
+Frage 3: Verteilung der Hits auf die einzelnen AOIs
+Ziel: 
+Ergebnis:
+
+Frage 4: Verteilung der Hits auf die einzelnen Positionen
+Ziel:
+Ergebnis:
+
+Frage 5: Verteilung der Hits auf die AOIs pro Position
+Ziel:
+Ergebnis:
+
+Frage 6: Verteilung der Hits auf die Clients
+Ziel:
+Ergebnis:
