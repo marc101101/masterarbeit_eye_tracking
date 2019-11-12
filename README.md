@@ -10,13 +10,16 @@ Ausführliche Doku zum Start und Verwendung des Codes: [https://github.com/marc1
 
 # Repository Struktur
 
-* /client: Raspberry Pi Client für Eyetracking Einheit
-* /download_scripts: Backups Scripts für Raspberry Pi Daten
-* /lsl_openface: Anbindung von OpenFace an LSL
-* /OpenFace_Fork_Guder: Erweiterung von OpenFace zum abgreifen von Echtzeit Daten
-* /python_server: Server zur Annahme und Verarbeitung der EyeTracking Daten
-* /start_scripts: Start Scripts für Eyetracking Einheiten
-* /web_clients: Webanwendung
+* /0_client: Raspberry Pi Client für Eyetracking Einheit
+* /1_python_server: Server zur Annahme und Verarbeitung der EyeTracking Daten
+* /2_start_scripts: Start Scripts für Eyetracking Einheiten
+* /3_download_scripts: Backups Scripts für Raspberry Pi Daten
+* /4_web-client: Webanwendung
+* /5_experiment: Experiment Daten + Auswertung
+* /4_paper: Wissenschaftliche Arbeit + Quellen
+
+* /[OpenFace_Fork_Guder](https://github.com/marc101101/OpenFace)
+: Erweiterung von OpenFace zum abgreifen von Echtzeit Daten
 
 # Architektur
 ![enter image description here](https://i.imgur.com/9YMWPEF.jpg)
