@@ -14,7 +14,7 @@ Abgegeben am: 30.9.2019
 * /3_download_scripts: Backups Scripts für Raspberry Pi Daten
 * /4_web-client: Webanwendung
 * /5_experiment: Experiment Daten + Auswertung
-* /4_paper: Wissenschaftliche Arbeit + Quellen
+* /6_paper: Wissenschaftliche Arbeit + Quellen
 
 * /[OpenFace_Fork_Guder](https://github.com/marc101101/OpenFace)
 : Erweiterung von OpenFace zum abgreifen von Echtzeit Daten
