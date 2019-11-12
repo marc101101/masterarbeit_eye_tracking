@@ -104,7 +104,7 @@ class GazeDetection:
     # FILE OPERATION METHODS ---------------------------------------------------------
 
     def read_config(self, file_name):
-        with open(file_name, 'r') as f:
+        with open(file_name, encoding='utf-8') as f:
             return json.load(f)
 
     def create_log_file(self, test_person_id):
