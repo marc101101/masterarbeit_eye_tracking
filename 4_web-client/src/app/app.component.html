@@ -1,0 +1,14 @@
+<nav>
+  <div class="nav-wrapper blue">
+    <a href="#" class="brand-logo"> <i class="material-icons" style="padding-left: 1rem">remove_red_eye</i> Gaze-Viz</a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li><a [routerLink]="['home']">3D View</a></li>
+      <li><a [routerLink]="['annotate']">Annotate</a></li>
+      <li><a [routerLink]="['visualizer']">Visualizer</a></li>
+      <li><a [routerLink]="['config']">Configurate Clients</a></li>
+      <li><a href="https://github.com/marc101101/masterarbeit_eye_tracking" target="_blank">Info</a></li>
+    </ul>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

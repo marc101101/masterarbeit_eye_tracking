@@ -1,0 +1,15 @@
+.annotateButton{
+    width: 2rem;
+    height: 2rem;
+    padding: 0rem;
+}
+
+.annotateMainButton{
+    width: 100%;
+}
+
+.infoButton{
+    width: 100%;
+    height: 3rem;
+    font-size: 2rem;
+}

@@ -1,0 +1,13 @@
+.input-field {
+    position: relative;
+    margin-top: 0rem; 
+    margin-bottom: 0rem; 
+}
+
+.hover-element{
+    cursor: pointer;
+}
+
+.inline-icon {
+    font-size: 1.5rem !important;
+ }
