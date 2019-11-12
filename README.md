@@ -6,8 +6,6 @@ Vorgelegt von: Markus Guder
 Laufendes Semester: SS 2019
 Abgegeben am: 30.9.2019
 
-Ausführliche Doku zum Start und Verwendung des Codes: [https://github.com/marc101101/masterarbeit_eye_tracking](https://github.com/marc101101/masterarbeit_eye_tracking)
-
 # Repository Struktur
 
 * /0_client: Raspberry Pi Client für Eyetracking Einheit
@@ -27,6 +25,21 @@ Ausführliche Doku zum Start und Verwendung des Codes: [https://github.com/marc1
 ## Eyetracking Einheit
 Die primäre Funktion der Eyetracking Einheit ist die Erfassung der Blicke des Nutzers mithilfe der OpenFace Software und die Weiterleitung der Daten an die zentrale Server-Einheit.
 
+### Start Script Aufbau
+
+``
+../../OpenFace/build/bin/FeatureExtraction -device 0 | python3  ../../client/client.py {{SERVER_IP}} {{client_ID}}
+``
+
+
+### Start Script Aufbau - Beispiel
+
+``
+../../OpenFace/build/bin/FeatureExtraction -device 0 | python3  ../../client/client.py 192.168.0.191 cam_3
+``
+
+Die Start Scripte befinden sich im Ordner /2_start_scripts. Diese zeigen exemplarisch auf wie die Webclients zu starten sind.
+**Wichtig:** Die Servereinheit muss vor den Client Einheiten gestartet werden.
 
 ## Server
 Die Hauptaufgabe der zentralen Servereinheit ist die Annahme der von den Clients generierten Daten, deren Persistierung, die Client abhänige Transformation der Blickdaten und deren Schnittpunkt Berechnung mit den Küchenelementen. Anschließend müssen die errechneten Daten wiederum einem potentiellen Assistenzsystem bereitgestellt werden. In dieser Arbeit wird hierfür eine Visualisierungskomponente genutzt, die im Punkt 3.3.3 beschrieben wird.
