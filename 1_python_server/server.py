@@ -22,16 +22,30 @@ def handle_message(message):
 
 
 @app.route('/config', methods=['GET'])
-def get_config():
+def get_cam_config():
     if request.method == 'GET':
         return mainClass.get_cam_config()
     pass
 
 
 @app.route('/config', methods=['POST'])
-def set_config():
+def set_cam_config():
     if request.method == 'POST':
         return mainClass.set_cam_config(request.get_json())
+    else:
+        return "403"
+
+@app.route('/annotation', methods=['GET'])
+def get_annotation_config():
+    if request.method == 'GET':
+        return mainClass.get_annotation_config()
+    pass
+
+
+@app.route('/annotation', methods=['POST'])
+def set_annotation_config():
+    if request.method == 'POST':
+        return mainClass.set_annotation_config(request.get_json())
     else:
         return "403"
 

@@ -11,7 +11,6 @@ import numpy as np
 
 #drawClass = DrawCurrentData()
 
-
 class GazeDetection:
     file_name_raw = ''
     file_name_annotation = ''
@@ -25,12 +24,18 @@ class GazeDetection:
     config = {}
     config_file_name = 'config/cam_config.json'
     header_csv_config_file_name = 'config/header_csv_config.json'
+
+    config_annotation = {}
+    config_annotation_file_name = "config/aoi_config.json"
+
     session_data = []
+    
     TRANSFORMED_COORDS_GAZE = 0.0
     TRANSFORMED_GAZES = 0.0
 
     def __init__(self):
         self.config = self.read_config(self.config_file_name)
+        self.config_annotation = self.read_config(self.config_annotation_file_name)
         self.header_file_row = self.read_config(self.header_csv_config_file_name)['raw_header']
         self.header_file_annotation = self.read_config(self.header_csv_config_file_name)['annotation_header']
 
@@ -197,6 +202,21 @@ class GazeDetection:
             return json.dumps(config)
         except Exception as e:
             return json.dumps([])
+    
+    def get_annotation_config(self):
+        try:
+            return json.dumps(self.config_annotation)
+        except Exception as e:
+            return json.dumps([])
+
+    def set_annotation_config(self, config):
+        try:
+            with open('config/aoi_config.json', 'w') as outfile:
+                json.dump(config, outfile)
+            self.config = config
+            return json.dumps(config)
+        except Exception as e:
+            return json.dumps([])
 
 # TRANSFORM COORDINATES METHODS ---------------------------------------------------------
 
@@ -324,13 +344,7 @@ class GazeDetection:
 # AOI METHODS -------------------------------------------------------------------
 
     def get_aois(self):
-        schrank_oben = AOI([0, 330, 75], [800, 330, 75], [0, 496, 75], 'orange', 'Schrank oben')
-        wand = AOI([0, 330, 1], [0, 200, 1], [800, 330, 1], 'blue', 'Wand zwischen Schränken')
-        schrank_unten = AOI([0, 200, 156], [800, 200, 156], [0, 0, 156], 'white', 'Schrank unten')
-        af = AOI([0, 200, 0], [800, 200, 0], [0, 200, 156], 'green', 'Arbeitsfläche')
-        ks = AOI([800, 0, 156], [935, 0, 156], [800, 496, 156], 'cyan', 'Kühlschrank')
-
-        return [schrank_oben, wand, schrank_unten, ks, af]
+        return self.config_annotation
 
     def aoi_to_point_and_normal(self, aoi):
         return aoi.p1, self.normalize(aoi.n)
