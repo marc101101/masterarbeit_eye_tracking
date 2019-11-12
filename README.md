@@ -72,3 +72,36 @@ Wenn der Server gestartet ist, dann wird er auf http://0.0.0.0:5000/ bzw. ws://0
 
 ## Web Anwendung
 Wie bereits angesprochen ist die Webanwendung nur eine Zusatzkomponente, ohne die das System trotzdem nutzbar wäre. Die öffentlich im Netzwerk verfügbare Schnittstelle der Servereinheit, auf der fortlaufend neue Daten veröffentlicht werden, könnte beispielsweise auch von einem Assistenzsystem als Eingabequelle für Blickdaten genutzt werden. Nichtsdestotrotz erfüllt sie im Kern drei wichtige Aufgaben. Die Darstellung der Daten in Echtzeit, das einfache Konfigurieren der Clients und die Annotierung von Echtzeitdaten für die spätere Evaluierung des Systems.
+
+Es findet sich eine detailierte Ansicht über alle Scripte für die Webanwendung [hier](https://github.com/marc101101/masterarbeit_eye_tracking/tree/master/4_web-client).
+
+### Installation
+
+``
+npm install
+``
+
+### Start der Webanwendung
+
+``
+npm start
+``
+
+Wenn die Webanwendung gestartet ist, dann ist diese unter http://localhost:4200 lokal erreichbar.
+
+
+### Build der Webanwendung
+
+#### Default Build
+``
+npm run build
+``
+
+#### Productive Build
+``
+ng build --prod  
+``
+
+Wenn die Webanwendung gebuildet wurde, dann liegen die gebundelten Dateien unter /dist.
+
+
