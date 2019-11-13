@@ -29,6 +29,13 @@ class GazeDetection:
     TRANSFORMED_COORDS_GAZE = 0.0
     TRANSFORMED_GAZES = 0.0
 
+   matrix_cache = {
+        "cam_1": None,
+        "cam_2": None,
+        "cam_3": None,
+        "cam_4": None
+    }
+
     def __init__(self):
         self.config = self.read_config(self.config_file_name)
         self.config_annotation = self.read_config(self.config_annotation_file_name)
@@ -44,7 +51,16 @@ class GazeDetection:
             row = self.map_values(body)
             self.write_to_csv_annotation(row)
 
-        return self.transform_data(body).tolist()
+        try:
+            return self.transform_data(body).tolist()
+            pass
+        except expression as identifier:
+            return {
+                "transformed_gazes": [0,0,0]
+                "aoi_hits": "null"
+            }
+            pass
+        
 
     def prep_aoi(self):
         aois = self.get_aois()
@@ -58,14 +74,6 @@ class GazeDetection:
 
         # Start- und Endpunkte der Blicke (Start = Ende, wenn kein Schnittpunkt => Entfernung INF)
         coords, gaze_end = self.get_gaze_pairs(self.TRANSFORMED_COORDS_GAZE, self.TRANSFORMED_GAZES, distances)
-
-        # coords = np.swapaxes(coords, 0, 1)
-        # gaze_end = np.swapaxes(gaze_end, 0, 1)
-
-        #drawClass.plot_vectors_with_image_and_aois(coords, gaze_end, aois, 'Test')
-
-        #for aoi in aois:
-            #drawClass.plot_heatmap(aoi, aoi.title)
 
     # ANNOTATION METHODS ---------------------------------------------------------
 
@@ -216,27 +224,58 @@ class GazeDetection:
 
 # TRANSFORM COORDINATES METHODS ---------------------------------------------------------
 
+    def fill_matrix_cache():
+        with open(config_file_name, 'r') as f:
+            config = json.load(f)
+            matrix_cache["cam_1"] = get_transformation_matrix("cam_1", config["cam_1"])
+            matrix_cache["cam_2"] = get_transformation_matrix("cam_2", config["cam_2"])
+            matrix_cache["cam_3"] = get_transformation_matrix("cam_3", config["cam_3"])
+            matrix_cache["cam_4"] = get_transformation_matrix("cam_4", config["cam_4"])
+
     def transform_data(self, body):
         COORDS_GAZE = np.array([body['eye_lmk_X_0'], body['eye_lmk_Y_0'], body['eye_lmk_Z_0']])
         GAZES = np.array([body['gaze_direction_0_x'], body['gaze_direction_0_y'], body['gaze_direction_0_z']])
 
-        coords = COORDS_GAZE
-        directions = GAZES
-        client_id = body['client_id']
+        detected_aois_with_cross_hair_dist = run_aoi_evaluation(
+            aoi_list, matrix_cache[client_id], coords, gazes, "path", render)
 
+        return {
+            "transformed_gazes": [0,0,0]
+            "aoi_hits": detected_aois_with_cross_hair_dist
+        }
+
+    def run_aoi_evaluation(aois, transformation_matrix, coordinates, gazes, heatmap_prefix):
         # normierte Blickrichtung auf Startkoordinaten addieren
-        #gaze_ends = np.swapaxes(np.swapaxes(coords, 0, 1) + np.swapaxes(directions, 0, 1), 0, 1)
-        gaze_ends = coords + directions
-
+        gaze_ends = np.swapaxes(np.swapaxes(coordinates, 0, 1) + np.swapaxes(gazes, 0, 1) * 10000, 0, 1)
+        
         # transformieren
-        self.TRANSFORMED_COORDS_GAZE = self.apply_transformation(client_id, COORDS_GAZE, swap=False)
-        gaze_ends = self.apply_transformation(client_id, gaze_ends, swap=False)
+        transformed_coordinates = apply_transformation(coordinates, transformation_matrix, swap=False)
+        transformed_gaze_ends = apply_transformation(gaze_ends, transformation_matrix, swap=False)
 
         # Blickrichtung zurückrechnen und normalisieren
-        directions = gaze_ends - self.TRANSFORMED_COORDS_GAZE
-        self.TRANSFORMED_GAZES = np.array([self.normalize(directions[i]) for i in range(len(directions))])
+        transformed_directions = transformed_gaze_ends - transformed_coordinates
+        transformed_gazes = np.array([normalize(transformed_directions[i]) for i in range(len(transformed_directions))])
 
-        return self.TRANSFORMED_GAZES
+        # Intersektion Ojekte erstellen
+        intersections = get_all_aois_intersection(transformed_coordinates, transformed_gazes, aois)
+
+        # Kürzeste Entfernung für jeden Punkt
+        distances = np.array([set_closest_intersection_and_get_distance(intersections[i]) for i in range(len(intersections))])
+        
+        detected_aois_with_cross_hair_dist = []
+        
+        for intersect in intersections:
+            for single in intersect:
+                if(single.is_hit):
+                    detected_aois_with_cross_hair_dist.append([single.aoi.title, single.dist_cross_hair_end])
+                        
+        # Start- und Endpunkte der Blicke (Start = Ende, wenn kein Schnittpunkt => Entfernung INF)
+        gaze_starts, gaze_ends = get_gaze_pairs(transformed_coordinates, transformed_gazes, distances)
+        
+        gaze_starts = np.swapaxes(gaze_starts, 0, 1)
+        gaze_ends = np.swapaxes(gaze_ends, 0, 1)
+
+        return detected_aois_with_cross_hair_dist
 
     def get_transformation_matrix(self, client_id):
         rot_x = self.rotate_x(math.radians(self.config[client_id]['rot_x']))
