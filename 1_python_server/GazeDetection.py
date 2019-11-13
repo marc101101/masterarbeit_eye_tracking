@@ -7,10 +7,6 @@ import time
 import csv
 import numpy as np
 
-#from DrawCurrentData import DrawCurrentData
-
-#drawClass = DrawCurrentData()
-
 class GazeDetection:
     file_name_raw = ''
     file_name_annotation = ''
@@ -101,7 +97,7 @@ class GazeDetection:
             json.dump(meta, outfile)
             return json.dumps("success")
 
-    # FILE OPERATION METHODS ---------------------------------------------------------
+# FILE OPERATION METHODS ---------------------------------------------------------
 
     def read_config(self, file_name):
         with open(file_name, encoding='utf-8') as f:

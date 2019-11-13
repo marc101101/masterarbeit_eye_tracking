@@ -20,13 +20,11 @@ def handle_message(message):
     }
     emit('event', emit_data_object, broadcast=True)
 
-
 @app.route('/config', methods=['GET'])
 def get_cam_config():
     if request.method == 'GET':
         return mainClass.get_cam_config()
     pass
-
 
 @app.route('/config', methods=['POST'])
 def set_cam_config():
