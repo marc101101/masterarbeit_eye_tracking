@@ -11,7 +11,7 @@ kiwisolver==1.0.1
 MarkupSafe==1.1.1
 matplotlib==3.0.2
 nbformat==4.4.0
-numpy==1.15.3
+numpy==1.22.0
 pandas==0.23.4
 pylsl==1.13.1
 pyparsing==2.3.1
